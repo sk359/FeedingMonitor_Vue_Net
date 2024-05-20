@@ -5,7 +5,7 @@ namespace backend.Data
 {
   public class ModelValidation
   {
-    public static bool IsValidFeedingData(Feeding feeding)
+    public static bool HasValidFeedingData(Feeding feeding)
     {
       if (feeding.eatenpercentage < 0 || feeding.eatenpercentage > 100)
       {
@@ -14,7 +14,7 @@ namespace backend.Data
       return true;
     }
 
-    public static  bool IsValidCatname(Feeding feeding)
+    public static  bool HasValidCatname(Feeding feeding)
     {
       string pattern = "^[A-Z][a-z]+$";
       Regex rg = new Regex(pattern);

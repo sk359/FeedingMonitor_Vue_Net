@@ -10,7 +10,7 @@ public class ModelValidationTest
     {
         Feeding f = new Feeding();
         f.eatenpercentage = -10;
-        Assert.False(ModelValidation.IsValidFeedingData(f), "Keine negativen Werte erlaubt");
+        Assert.False(ModelValidation.HasValidFeedingData(f), "Keine negativen Werte erlaubt");
     }
 
     [Fact]
@@ -18,7 +18,7 @@ public class ModelValidationTest
     {
         Feeding f = new Feeding();
         f.eatenpercentage = 110;
-        Assert.False(ModelValidation.IsValidFeedingData(f), "Keine Werte über 100 % erlaubt");
+        Assert.False(ModelValidation.HasValidFeedingData(f), "Keine Werte über 100 % erlaubt");
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class ModelValidationTest
     {
         Feeding f = new Feeding();
         f.eatenpercentage = 20;
-        Assert.True(ModelValidation.IsValidFeedingData(f), "Erlaubter Wert");
+        Assert.True(ModelValidation.HasValidFeedingData(f), "Erlaubter Wert");
     }
 
     [Theory]
@@ -38,7 +38,7 @@ public class ModelValidationTest
     {
         Feeding f = new Feeding();
         f.catname = name;
-        Assert.False(ModelValidation.IsValidCatname(f), "Nur einfache Namen zugelassen");
+        Assert.False(ModelValidation.HasValidCatname(f), "Nur einfache Namen zugelassen");
 
     }
 
@@ -51,7 +51,7 @@ public class ModelValidationTest
     {
         Feeding f = new Feeding();
         f.catname = name;
-        Assert.True(ModelValidation.IsValidCatname(f), "Einfache Namen ok");
+        Assert.True(ModelValidation.HasValidCatname(f), "Einfache Namen ok");
 
     }
 }
