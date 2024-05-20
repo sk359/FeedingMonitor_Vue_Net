@@ -44,4 +44,6 @@ dotnet add package Microsoft.AspNetCore.SpaServices.Extensions
 dotnet new xunit -o backend.Tests
 dotnet sln add ./backend.Tests/backend.Tests.csproj
 dotnet add ./backend.Tests/backend.Tests.csproj reference backend/backend.csproj
+
+dotnet test
 ```
