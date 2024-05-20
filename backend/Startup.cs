@@ -1,14 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using backend.Data;
 
 namespace backend
@@ -25,9 +16,7 @@ namespace backend
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
-        {
-            //string connectionString = Configuration.GetConnectionString("DefaultConnection");
-            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
+        {            
             services.AddDbContext<FeedingContext>(options => options.UseNpgsql(Configuration.GetConnectionString("FeedingDatabase")));  
             services.AddScoped<IFeedingRepository, FeedingRepository>();      
             
@@ -41,8 +30,7 @@ namespace backend
                 options.AddPolicy("VueCorsPolicy", builder =>
                 {
                     builder
-                    //.AllowAnyHeader()
-                    //.WithMethods("GET", "OPTIONS")
+                    //.AllowAnyHeader()                    
                     .AllowAnyMethod()
                     //.AllowCredentials()
                     .AllowAnyOrigin()
@@ -60,16 +48,10 @@ namespace backend
 
             if (env.IsDevelopment())
             {
-               app.UseDeveloperExceptionPage();
-               /* app.UseSpa(spa =>
-               {
-                  spa.Options.SourcePath = "D:\\Dokumente\\csharp_projekte\\FeedingMonitor_Vue_Net\\frontend\\dist";
-                  spa.UseProxyToSpaDevelopmentServer("https://localhost:5173");
-               });  */
+               app.UseDeveloperExceptionPage();               
             } 
             else
-            {
-               //app.UseSpaStaticFiles();
+            {               
                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
@@ -77,12 +59,7 @@ namespace backend
 
             app.UseHttpsRedirection();        
 
-            app.UseCors("VueCorsPolicy");
-            /* app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true) // allow any origin
-                .AllowCredentials()); // allow credentials */
+            app.UseCors("VueCorsPolicy");            
 
             app.UseStaticFiles();
             if (!env.IsDevelopment())
@@ -91,11 +68,9 @@ namespace backend
             }    
 
             dbContext.Database.EnsureCreated();
-            //app.UseAuthentication();
-            app.UseMvc();
-            app.UseRouting();
-            //app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             
+            app.UseMvc();
+            app.UseRouting();                       
 
             app.UseEndpoints(endpoints =>
             {
@@ -112,8 +87,7 @@ namespace backend
                 if (env.IsDevelopment())
                 {
                     builder.UseProxyToSpaDevelopmentServer("http://localhost:5173");
-                }
-                //spa.Options.SourcePath = "D:\\Dokumente\\AngularDotNet\\angular-dot-net\\dist\\angular-dot-net";
+                }                
                
             });
 

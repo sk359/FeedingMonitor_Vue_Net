@@ -35,7 +35,26 @@ npm i --save @fortawesome/fontawesome-svg-core
 dotnet new web -o backend
 cd backend
 dotnet add package Microsoft.AspNetCore.SpaServices.Extensions
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
 ```
+
+### Migration mit EF
+
+Database first:
+
+```
+dotnet tool install --global dotnet-ef
+dotnet tool list --global // check ob installiert
+dotnet ef dbcontext scaffold <string mit details>
+```
+
+Code first:
+
+```
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
+
 
 
 ## Backend Unittests
