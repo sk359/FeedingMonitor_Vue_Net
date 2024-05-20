@@ -16,7 +16,9 @@ namespace backend.Data
     IEnumerable<Feeding> GetAll();
     public Feeding AddNewFeeding(Feeding feed); 
     public void DeleteFeedingById(Feeding feeding);
+    public IEnumerable<Brand> GetAllBrands();
     public IEnumerable<Brand> GetAllBrandsWithProducts();
+    public Brand AddNewBrand(Brand brand); 
 }
 
 public class FeedingRepository : IFeedingRepository
@@ -70,17 +72,24 @@ public class FeedingRepository : IFeedingRepository
 
     public IEnumerable<Brand> GetAllBrands()
     {
-      return _context.Brands.ToList();
+      return _context.Brands.OrderBy( b => b.name ).ToList();
     }
 
     public IEnumerable<Brand> GetAllBrandsWithProducts()
     {
-      return _context.Brands.Include(b => b.Products).ToList();
+      return _context.Brands.OrderBy( b => b.name ).Include(b => b.Products).ToList();
     }
 
     public IEnumerable<Product> GetAllProducts()
     {
       return _context.Products.ToList();
+    }
+
+    public Brand AddNewBrand(Brand brand) 
+    {
+      brand.created = DateTime.Now;
+      _context.Add(brand);
+      return brand;
     }
 
 }
