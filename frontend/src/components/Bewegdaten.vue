@@ -2,15 +2,19 @@
 import { onMounted, ref } from 'vue'
 import {get, post, deleteById } from '@/services/http_client'
 import { FeedingDto } from '@/models/Feeding';
+import StammBrandDto from '@/models/StammBrand'
 defineProps<{
   msg: string
 }>()
 
 const feedingList = ref()
+const brandList = ref()
 let newEntry: FeedingDto = new FeedingDto({})
 
 onMounted( async () => {
   console.log("sending get request")
+  const data: any[] = await get('http://localhost:5067/api/stammdaten/brand')
+  brandList.value = data.map( x => new StammBrandDto(x))
   loadData()
 })
 
@@ -45,34 +49,37 @@ async function deleteItem(f: FeedingDto) {
     <div class="row">
         <div class="col-6">
             <div class="form-group">
-            <label asp-for="Feeding.catname">Name der Katze</label><br>
-            <input class="form-control" v-model="newEntry.catname">
+              <label>Name der Katze</label><br>
+              <input class="form-control" v-model="newEntry.catname">
+            </div>            
+            <div class="form-group">
+              <label>Hersteller</label><br>
+              <select class="form-select" v-model="newEntry.brandname">
+                <option disabled value="">Bitte wählen</option>
+                <option v-for="option in brandList" v-bind:value="option.name" :key="name">{{ option.name }}</option>
+              </select>
             </div>
             <div class="form-group">
-                <label asp-for="Feeding.brandname">Hersteller</label><br>
-                <input class="form-control" v-model="newEntry.brandname">
-            </div>
-            <div class="form-group">
-                <label asp-for="Feeding.productname">Produkt</label><br>
+                <label>Produkt</label><br>
                 <input class="form-control" v-model="newEntry.productname">
             </div>
         </div>
 
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="Feeding.taste">Geschmack</label><br>
+                <label>Geschmack</label><br>
                 <input class="form-control" v-model="newEntry.taste">
             </div>
             <div class="form-group">
-                <label asp-for="Feeding.eatenpercentage">Zu wieviel % aufgegessen</label><br>
+                <label>Zu wieviel % aufgegessen</label><br>
                 <input class="form-control" type="number" min="0" max="100" v-model="newEntry.eatenpercentage">
             </div>
             <div class="form-group">
-                <label asp-for="Feeding.type">Art</label><br>
+                <label>Art</label><br>
                 <input class="form-control" min="0" max="100" v-model="newEntry.type">
             </div>
             <div class="form-group">
-                <label asp-for="Feeding.feedingtime">Wann</label><br>
+                <label>Wann</label><br>
                 <input class="form-control" type="datetime-local"  v-model="newEntry.feedingtime">
             </div>
         </div>

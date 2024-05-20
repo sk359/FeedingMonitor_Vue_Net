@@ -16,11 +16,7 @@ namespace backend.Controllers
         [HttpGet]        
         public ActionResult<List<Feeding>> Get()
         {
-            feedings = _repo.GetAllFeedingsForCat("Tobi");
-            foreach (Feeding row in feedings) 
-            {
-                  Console.WriteLine($"{row.catname} {row.brandname} - {row.eatenpercentage} - {row.feedingtime}");
-            } 
+            feedings = _repo.GetAllFeedingsForCat("Tobi");            
             return feedings.ToList();
         }
 
