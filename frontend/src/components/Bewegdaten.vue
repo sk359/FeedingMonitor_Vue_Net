@@ -1,15 +1,26 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import {get, post, deleteById } from '@/services/http_client'
-import { FeedingDto } from '@/models/Feeding';
+import type { Ref } from 'vue'
+import { FeedingDto } from '@/models/Feeding'
 import StammBrandDto from '@/models/StammBrand'
+import CatFilter from '@/components/CatFilter.vue'
 defineProps<{
   msg: string
 }>()
 
-const feedingList = ref()
+let feedingList: Ref<FeedingDto[]> = ref([])
 const brandList = ref()
-let newEntry: FeedingDto = new FeedingDto({})
+let newEntry: Ref<FeedingDto> = ref(new FeedingDto({}))
+let catNames = ref([])
+let selectedFilters: Ref<string[]> = ref([])
+
+const visibleRows = computed(() => {
+  if (selectedFilters) {
+    return feedingList.value.filter((n) => selectedFilters.value.includes(n.catname))
+  }
+  return []
+})
 
 onMounted( async () => {
   console.log("sending get request")
@@ -19,21 +30,58 @@ onMounted( async () => {
 })
 
 async function loadData() {
+  catNames = ref([])
   const data: any[] = await get('http://localhost:5067/api/bewegdaten')
   feedingList.value = data.map( x => new FeedingDto(x))
+  updateCatNames();
+}
+
+function updateCatNames() {
+  for (let item of feedingList.value) {
+    if (!catNames.value.includes(item.catname)) {
+      catNames.value.push(item.catname)
+    }
+  }
+  selectedFilters = ref(catNames.value)
+
 }
 
 async function saveDto() {
   console.log("save", newEntry);
-  const data: FeedingDto = await post('http://localhost:5067/api/bewegdaten', newEntry)
-  newEntry = new FeedingDto({})
+  const data: FeedingDto = await post('http://localhost:5067/api/bewegdaten', newEntry.value)
+  newEntry = ref(new FeedingDto({}))
   const newDb = new FeedingDto(data)
   feedingList.value.unshift(newDb)
+  updateCatNames();
 }
 
 async function deleteItem(f: FeedingDto) {
   const data: FeedingDto = await deleteById(`http://localhost:5067/api/bewegdaten/${f.id}`)
   loadData()
+}
+
+function isFish(feeding: FeedingDto): boolean {
+  return feeding.taste.toLowerCase().includes('fisch'); 
+}
+
+function disableSave(): boolean {  
+  if (newEntry == null) {
+    return true;
+  }  
+  if (newEntry.value.catname && newEntry.value.brandname && newEntry.value.eatenpercentage &&
+    newEntry.value.feedingtime) {
+      return false;
+    }
+  
+  return true;
+}
+
+function filterByNames(names: string[]) {
+  selectedFilters.value = names      
+}
+
+function showTableRow(feeding: FeedingDto): boolean {  
+  return selectedFilters.value.includes(feeding.catname)
 }
 
 
@@ -44,8 +92,6 @@ async function deleteItem(f: FeedingDto) {
   <div class="row">
 
     <div>
-<p>Neuer Eintrag</p>
-
     <div class="row">
         <div class="col-6">
             <div class="form-group">
@@ -84,8 +130,12 @@ async function deleteItem(f: FeedingDto) {
             </div>
         </div>
     </div>
-    <button class="btn btn-primary" @click="saveDto()">Speichern</button>
+    <button :disabled="disableSave()"  class="btn btn-primary" @click="saveDto()">Speichern</button>
 
+</div>
+
+<div style="margin-top:20px">
+  <CatFilter :name-list="catNames" @filter="(names) => filterByNames(names)"/>
 </div>
 
 
@@ -104,7 +154,8 @@ async function deleteItem(f: FeedingDto) {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="feeding in feedingList" :key="id">
+      <tr v-for="feeding in visibleRows" :key="id" :class="{fish: isFish(feeding)}"
+      :title="isFish(feeding) ? 'Fisch' : ''">
         <td>{{ feeding.catname }}</td>
         <td> {{ feeding.brandname }}</td>
         <td> {{ feeding.productname }}</td>
@@ -118,6 +169,9 @@ async function deleteItem(f: FeedingDto) {
 </template>
 
 <style scoped>
+.fish td {
+  background-color: lightblue;
+}
 .item {
   margin-top: 2rem;
   display: flex;

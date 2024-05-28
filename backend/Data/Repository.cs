@@ -26,9 +26,8 @@ public class FeedingRepository : IFeedingRepository
     private readonly FeedingContext _context;
 
     public FeedingRepository(FeedingContext context)
-    {
-      Console.WriteLine("Initializing Repo");
-        _context = context;        
+    {      
+      _context = context;        
     }
 
     public void Commit() 

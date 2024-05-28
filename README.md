@@ -36,6 +36,10 @@ dotnet new web -o backend
 cd backend
 dotnet add package Microsoft.AspNetCore.SpaServices.Extensions
 dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+oder alle Pakete:
+dotnet restore
 ```
 
 ### Migration mit EF
@@ -51,8 +55,9 @@ dotnet ef dbcontext scaffold <string mit details>
 Code first:
 
 ```
-dotnet ef migrations add InitialCreate
-dotnet ef database update
+export PATH="$PATH:$HOME/.dotnet/tools/"
+dotnet-ef migrations add InitialCreate
+dotnet-ef database update
 ```
 
 

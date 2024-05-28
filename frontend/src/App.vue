@@ -30,6 +30,9 @@ header {
   position: absolute;
   top: 0;
   width: 100%;
+  left: 0;
+  display: grid;
+  width: fit-content;
 }
 
 nav {

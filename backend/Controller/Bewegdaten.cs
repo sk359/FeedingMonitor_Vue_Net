@@ -16,7 +16,7 @@ namespace backend.Controllers
         [HttpGet]        
         public ActionResult<List<Feeding>> Get()
         {
-            feedings = _repo.GetAllFeedingsForCat("Tobi");            
+            feedings = _repo.GetAll();            
             return feedings.ToList();
         }
 
