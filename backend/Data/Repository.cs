@@ -19,6 +19,10 @@ namespace backend.Data
     public IEnumerable<Brand> GetAllBrands();
     public IEnumerable<Brand> GetAllBrandsWithProducts();
     public Brand AddNewBrand(Brand brand); 
+
+    public List<Product> GetAllProducts();
+
+    public Product AddNewProduct(Product product); 
 }
 
 public class FeedingRepository : IFeedingRepository
@@ -79,7 +83,7 @@ public class FeedingRepository : IFeedingRepository
       return _context.Brands.OrderBy( b => b.name ).Include(b => b.Products).ToList();
     }
 
-    public IEnumerable<Product> GetAllProducts()
+    public List<Product> GetAllProducts()
     {
       return _context.Products.ToList();
     }
@@ -89,6 +93,15 @@ public class FeedingRepository : IFeedingRepository
       brand.created = DateTime.Now;
       _context.Add(brand);
       return brand;
+    }
+
+    // Produkte:     
+
+    public Product AddNewProduct(Product product) 
+    {
+      product.created = DateTime.Now;
+      _context.Add(product);
+      return product;
     }
 
 }
